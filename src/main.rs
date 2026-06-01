@@ -221,3 +221,98 @@ fn main11() {
 
     println!("{combined}");
 }
+
+#[test]
+fn main12() {
+    struct MyStruct {
+        num: u32,
+        is_secret_of_life: bool,
+    }
+
+    let x = MyStruct {
+        num: 42,
+        is_secret_of_life: true,
+    };
+
+    let y = MyStruct {
+        num: x.num,
+        is_secret_of_life: x.is_secret_of_life,
+    };
+    let n = MyStruct {
+        num: 22,
+        is_secret_of_life: false,
+    };
+    let z = MyStruct { num: x.num, ..x }; // The .. means copy remaining
+    println!("{} {} {}", n.num, y.is_secret_of_life, z.num);
+}
+
+struct WeightInGrams(u32);
+#[allow(dead_code)]
+struct WeightInMilligrams(u32);
+fn to_weight_in_grams(kilograms: u32) -> WeightInGrams {
+    WeightInGrams(kilograms * 1000)
+}
+
+fn to_weight_in_milligrams(w : WeightInGrams) -> WeightInMilligrams  {
+    WeightInMilligrams(w.0 * 1000)
+}
+
+#[test]
+fn main13() {
+    let x = to_weight_in_grams(42);
+    let _y = to_weight_in_milligrams(x);
+    // let z : WeightInGrams = x;  // Won't compile: x was moved into to_weight_in_milligrams()
+    // let a : WeightInGrams = y;   // Won't compile: type mismatch (WeightInMilligrams vs WeightInGrams)
+}
+
+#[derive(Debug, Clone, PartialEq)]
+struct Point { x: i32, y: i32 }
+
+#[test]
+fn main14() {
+    let p = Point { x: 1, y: 2 };
+    println!("{:?}", p);           // Debug: works because of #[derive(Debug)]
+    let p2 = p.clone();           // Clone: works because of #[derive(Clone)]
+    assert_eq!(p, p2);            // PartialEq: works because of #[derive(PartialEq)]
+}
+
+#[test]
+fn main15() {
+    let mut v = Vec::new();    // Empty vector, type inferred from usage
+    v.push(42);                // Add element to end - Vec<i32>
+    v.push(43);
+
+    // Safe iteration (preferred)
+    for x in &v {              // Borrow elements, don't consume vector
+        println!("{x}");
+    }
+
+    // Initialization shortcuts
+    let mut v2 = vec![1, 2, 3, 4, 5];           // Macro for initialization
+    let _v3 = vec![0; 10];                       // 10 zeros
+
+    // Safe access methods (preferred over indexing)
+    match v2.get(0) {
+        Some(first) => println!("First: {first}"),
+        None => println!("Empty vector"),
+    }
+
+    match v2.get(1) {
+        Some(second) => println!("Second: {second}"),
+        None => println!("Empty vector"),
+    }
+
+    match v2.get(2) {
+        Some(thirddd) => println!("Third: {thirddd}"),
+        None => println!("Empty vector"),
+    }
+
+    // Useful methods
+    println!("Length: {}, Capacity: {}", v2.len(), v2.capacity());
+    if let Some(last) = v2.pop() {             // Remove and return last element
+        println!("Popped: {last}");
+    }
+
+    // Dangerous: direct indexing (can panic!)
+    // println!("{}", v2[100]);  // Would panic at runtime
+}
