@@ -1,4 +1,5 @@
 mod exercisse_string_manipulation;
+mod eercise_vec_and_hashmap;
 
 fn main() {
     println!("Hello, world!");
@@ -315,4 +316,24 @@ fn main15() {
 
     // Dangerous: direct indexing (can panic!)
     // println!("{}", v2[100]);  // Would panic at runtime
+}
+
+#[test]
+fn main16() {
+    use std::collections::HashMap;  // Need explicit import, unlike Vec
+    let mut map = HashMap::new();       // Allocate an empty HashMap
+    map.insert(40, false);  // Type is inferred as int -> bool
+    map.insert(41, false);
+    map.insert(42, true);
+    for (key, value) in map {
+        println!("{key} {value}");
+    }
+    let map = HashMap::from([(40, false), (41, false), (42, true)]);
+    if let Some(x) = map.get(&43) {
+        println!("43 was mapped to {x:?}");
+    } else {
+        println!("No mapping was found for 43");
+    }
+    let x = map.get(&43).or(Some(&false));  // Default value if key isn't found
+    println!("{x:?}");
 }
