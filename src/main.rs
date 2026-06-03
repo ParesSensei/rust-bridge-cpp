@@ -337,3 +337,92 @@ fn main16() {
     let x = map.get(&43).or(Some(&false));  // Default value if key isn't found
     println!("{x:?}");
 }
+
+#[test]
+#[allow(unused)]
+fn main17() {
+    enum Numbers {
+        Zero,
+        SmallNumber(u8),
+        BiggerNumber(u32),
+        EvenBiggerNumber(u64),
+    }
+    let a = Numbers::Zero;
+    let b = Numbers::SmallNumber(42);
+    let c : Numbers = a; // Ok -- the type of a is Numbers
+    let d : Numbers = b; // Ok -- the type of b is Numbers
+}
+
+#[test]
+fn main18() {
+    let x = 42;
+    // In this case, the _ covers all numbers except the ones explicitly listed
+    let is_secret_of_life = match x {
+        42 => true, // return type is boolean value
+        _ => false, // return type boolean value
+        // This won't compile because return type isn't boolean
+        // _ => 0
+    };
+    println!("{is_secret_of_life}");
+}
+
+#[test]
+fn main19() {
+    let x = 42;
+    match x {
+        // Note that the =41 ensures the inclusive range
+        0..=41 => println!("Less than the secret of life"),
+        42 => println!("Secret of life"),
+        _ => println!("More than the secret of life"),
+    }
+    let y = 100;
+    match y {
+        100 if x == 43 => println!("y is 100% not secret of life"),
+        100 if x == 42 => println!("y is 100% secret of life"),
+        _ => (),    // Do nothing
+    }
+}
+
+
+#[test]
+#[allow(unused)]
+fn main20() {
+    enum Numbers {
+        Zero,
+        SmallNumber(u8),
+        BiggerNumber(u32),
+        EvenBiggerNumber(u64),
+    }
+    let b = Numbers::SmallNumber(42);
+    match b {
+        Numbers::Zero => println!("Zero"),
+        Numbers::SmallNumber(value) => println!("Small number {value}"),
+        Numbers::BiggerNumber(_) | Numbers::EvenBiggerNumber(_) => println!("Some BiggerNumber or EvenBiggerNumber"),
+    }
+
+    // Boolean test for specific variants
+    if matches!(b, Numbers::Zero | Numbers::SmallNumber(_)) {
+        println!("Matched Zero or small number");
+    }
+}
+#[test]
+fn main21() {
+    struct Foo {
+        x: (u32, bool),
+        y: u32
+    }
+    let f = Foo {x: (42, true), y: 100};
+    match f {
+        // Capture the value of x into a variable called tuple
+        Foo{y: 100, x : tuple} => println!("Matched x: {tuple:?}"),
+        _ => ()
+    }
+    let a = [40, 41, 42];
+    match a {
+        // Last element of slice must be 42. @ is used to bind the match
+        [rest @ .., 42] => println!("{rest:?}"),
+        // First element of the slice must be 42. @ is used to bind the match
+        [42, rest @ ..] => println!("{rest:?}"),
+        _ => (),
+    }
+}
