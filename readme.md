@@ -8,5 +8,5 @@ part 1 foundation
 
 31/05/2026
 5.5 data structure✅
-6.6 Enums and pattern matching ❌
+6.6 Enums and pattern matching ✅
 7.7 Ownership and borrowing ❌
