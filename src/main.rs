@@ -1,6 +1,7 @@
 mod exercisse_string_manipulation;
 mod eercise_vec_and_hashmap;
 mod exercise_enum_and_match;
+mod exercise_intermdiate;
 
 fn main() {
     println!("Hello, world!");
@@ -426,4 +427,22 @@ fn main21() {
         [42, rest @ ..] => println!("{rest:?}"),
         _ => (),
     }
+}
+
+#[derive(Debug)]
+#[allow(unused)]
+struct Pointt {x: u32, y: u32}
+impl Pointt {
+    fn new(x: u32, y: u32) -> Self {
+        Pointt {x, y}
+    }
+    fn increment_x(&mut self) {
+        self.x += 1;
+    }
+}
+#[test]
+fn main22() {
+    let mut p = Pointt::new(10, 20);
+    p.increment_x();
+    println!("{p:?}")
 }

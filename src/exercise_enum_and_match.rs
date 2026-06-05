@@ -1,4 +1,4 @@
-
+#![allow(unused)]
 
 enum Operation {
     Add(u64, u64),
