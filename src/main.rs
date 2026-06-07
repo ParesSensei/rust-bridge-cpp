@@ -4,6 +4,7 @@ mod exercisse_string_manipulation;
 mod eercise_vec_and_hashmap;
 mod exercise_enum_and_match;
 mod exercise_intermdiate;
+mod exercise_move_copy_drop;
 
 fn main() {
     println!("Hello, world!");
