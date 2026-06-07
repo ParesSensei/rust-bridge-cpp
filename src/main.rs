@@ -1,3 +1,5 @@
+#![allow(unused)]
+
 mod exercisse_string_manipulation;
 mod eercise_vec_and_hashmap;
 mod exercise_enum_and_match;
@@ -187,8 +189,9 @@ fn main9() {
     println!("{b:?} {c:?} {d:?}");
 }
 
-
+#[allow(unused)]
 const SECRET_OF_LIFE: u32 = 42;
+#[allow(unused)]
 static GLOBAL_VARIABLE : u32 = 2;
 #[test]
 fn main10() {
@@ -445,4 +448,147 @@ fn main22() {
     let mut p = Pointt::new(10, 20);
     p.increment_x();
     println!("{p:?}")
+}
+
+
+// ------- Rust Ownership ------------ //
+#[allow(unused)]
+fn main23() {
+    let a = 42; // Owner
+    let b = &a; // First borrow
+    {
+        let aa = 42;
+        let c = &a; // Second borrow; a is still in scope
+        // Ok: c goes out of scope here
+        // aa goes out of scope here
+    }
+    // let d = &aa; // Will not compile unless aa is moved to outside scope
+    // b implicitly goes out of scope before a
+    // a goes out of scope last
+}
+
+fn fooo(x: &u32) {
+    println!("{x}");
+}
+fn barr(x: u32) {
+    println!("{x}");
+}
+
+#[test]
+fn main24() {
+    let a = 42;
+    fooo(&a);    // By reference
+    barr(a);     // By value (copy)
+}
+
+
+// fn no_dangling() -> &u32 {
+//     // lifetime of a begins here
+//     let a = 42;
+//     // Won't compile. lifetime of a ends here
+//     &a
+// }
+
+fn ok_reference(a: &u32) -> &u32 {
+    // Ok because the lifetime of a always exceeds ok_reference()
+    a
+}
+#[test]
+fn main25() {
+    let a = 42;     // lifetime of a begins here
+    let b = ok_reference(&a);
+    // lifetime of b ends here
+    // lifetime of a ends here
+}
+
+#[test]
+fn main26() {
+    let s = String::from("Rust");    // Allocate a string from the heap
+    let s1 = s; // Transfer ownership to s1. s is invalid at this point
+    println!("{s1}");
+    // This will not compile
+    //println!("{s}");
+    // s1 goes out of scope here and the memory is deallocated
+    // s goes out of scope here, but nothing happens because it doesn't own anything
+}
+
+fn fou(s : String) {
+    println!("{s}");
+    // The heap memory pointed to by s will be deallocated here
+}
+fn bag(s : &String) {
+    println!("{s}");
+    // Nothing happens -- s is borrowed
+}
+#[test]
+fn main27() {
+    let s = String::from("Rust string move example");    // Allocate a string from the heap
+    fou(s); // Transfers ownership; s is invalid now
+    // println!("{s}");  // will not compile
+    let t = String::from("Rust string borrow example");
+    bag(&t);    // t continues to hold ownership
+    println!("{t}");
+}
+
+
+struct Pointie {
+    x: u32,
+    y: u32,
+}
+fn consume_point(p: Pointie) {
+    println!("{} {}", p.x, p.y);
+}
+fn borrow_point(p: &Pointie) {
+    println!("{} {}", p.x, p.y);
+}
+#[test]
+fn main28() {
+    let p = Pointie {x: 10, y: 20};
+    // Try flipping the two lines
+    borrow_point(&p);
+    consume_point(p);
+}
+
+#[test]
+fn main29() {
+    let s = String::from("Rust");    // Allocate a string from the heap
+    let s1 = s.clone(); // Copy the string; creates a new allocation on the heap
+    println!("{s1}");
+    println!("{s}");
+    // s1 goes out of scope here and the memory is deallocated
+    // s goes out of scope here, and the memory is deallocated
+}
+
+
+// Try commenting this out to see the change in let p1 = p; below
+#[derive(Copy, Clone, Debug)]   // We'll discuss this more later
+struct Pointq{x: u32, y:u32}
+#[test]
+fn main30() {
+    let p = Pointq {x: 42, y: 40};
+    let p1 = p;     // This will perform a copy now instead of move
+    println!("p: {p:?}");
+    println!("p1: {p:?}");
+    let p2 = p1.clone();    // Semantically the same as copy
+}
+
+
+struct Poin {x: u32, y:u32}
+
+// Equivalent to: ~Point() { printf("Goodbye point x:%u, y:%u\n", x, y); }
+impl Drop for Poin {
+    fn drop(&mut self) {
+        println!("Goodbye point x:{}, y:{}", self.x, self.y);
+    }
+}
+#[test]
+fn main31() {
+    let p = Poin{x: 42, y: 42};
+    {
+        let p1 = Poin{x:43, y: 43};
+        println!("Exiting inner block");
+        // p1.drop() called here — like C++ end-of-scope destructor
+    }
+    println!("Exiting main");
+    // p.drop() called here
 }
