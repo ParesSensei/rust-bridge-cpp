@@ -5,6 +5,7 @@ mod eercise_vec_and_hashmap;
 mod exercise_enum_and_match;
 mod exercise_intermdiate;
 mod exercise_move_copy_drop;
+mod exercise_starter_lifetime;
 
 fn main() {
     println!("Hello, world!");
@@ -592,4 +593,81 @@ fn main31() {
     }
     println!("Exiting main");
     // p.drop() called here
+}
+
+
+// -------- Lifetime and borrowing deep dive -------- //
+
+
+fn borrow_mut(x: &mut u32) {
+    *x = 43;
+}
+#[test]
+fn main32() {
+    let mut x = 42;
+    let y = &mut x;
+    borrow_mut(y);
+    let _z = &x; // Permitted because the compiler knows y isn't subsequently used
+    //println!("{y}"); // Will not compile if this is uncommented
+    borrow_mut(&mut x); // Permitted because _z isn't used
+    let z = &x; // Ok -- mutable borrow of x ended after borrow_mut() returned
+    println!("{z}");
+}
+
+
+#[derive(Debug)]
+struct Points {x: u32, y: u32}
+
+// Without lifetime annotation, this won't compile:
+// fn left_or_right(pick_left: bool, left: &Point, right: &Point) -> &Point
+
+// With lifetime annotation - all references share the same lifetime 'a
+fn left_or_right<'a>(pick_left: bool, left: &'a Points, right: &'a Points) -> &'a Points {
+    if pick_left { left } else { right }
+}
+
+// More complex: different lifetimes for inputs
+fn get_x_coordinate<'a, 'b>(p1: &'a Points, _p2: &'b Points) -> &'a u32 {
+    &p1.x  // Return value lifetime tied to p1, not p2
+}
+
+#[test]
+fn main33() {
+    let p1 = Points {x: 20, y: 30};
+    let result;
+    {
+        let p2 = Points {x: 42, y: 50};
+        result = left_or_right(false, &p1, &p2);
+        // This works because we use result before p2 goes out of scope
+        println!("Selected: {result:?}");
+    }
+    // This would NOT work - result references p2 which is now gone:
+    // println!("After scope: {result:?}");
+}
+
+
+use std::collections::HashMap;
+#[derive(Debug)]
+struct Pointa {x: u32, y: u32}
+struct Lookup<'a> {
+    map: HashMap<u32, &'a Pointa>,
+}
+
+#[test]
+fn main34() {
+    let p = Pointa{x: 42, y: 42};
+    let p1 = Pointa{x: 50, y: 60};
+    let mut m = Lookup {map : HashMap::new()};
+    m.map.insert(0, &p);
+    m.map.insert(1, &p1);
+    {
+        let p3 = Pointa{x: 60, y:70};
+        //m.map.insert(3, &p3); // Will not compile
+        // p3 is dropped here, but m will outlive
+    }
+    for (k, v) in m.map {
+        println!("{v:?}");
+    }
+    // m is dropped here
+    // p1 and p are dropped here in that order
 }

@@ -9,7 +9,9 @@ part 1 foundation
 31/05/2026  
 5.5 data structure✅  
 6.6 Enums and pattern matching ✅  
-7.7 Ownership and borrowing ❌  
+7.7 Ownership and borrowing ✅  
+7.1 Lifetimes and borrowing deep dive ❌  
+7.2 Smart Pointer and Interrior mutability❌  
 
 sekalli lagi rust hanya mengizinkan satu mutable reference pada satu variable dan banyak read only reference  
 Rust only permits a single mutable reference to a variable and multiple read-only references  
