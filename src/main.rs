@@ -671,3 +671,15 @@ fn main34() {
     // m is dropped here
     // p1 and p are dropped here in that order
 }
+
+
+#[test]
+fn lop() {
+    let w= 5;
+    for i in 0..w{
+        for _ in 0..i{
+            print!("*");
+        }
+        println!();
+    }
+}
