@@ -6,6 +6,7 @@ mod exercise_enum_and_match;
 mod exercise_intermdiate;
 mod exercise_move_copy_drop;
 mod exercise_starter_lifetime;
+mod exercise_intermediate_predict_the_elision;
 
 fn main() {
     println!("Hello, world!");
@@ -670,16 +671,4 @@ fn main34() {
     }
     // m is dropped here
     // p1 and p are dropped here in that order
-}
-
-
-#[test]
-fn lop() {
-    let w= 5;
-    for i in 0..w{
-        for _ in 0..i{
-            print!("*");
-        }
-        println!();
-    }
 }
