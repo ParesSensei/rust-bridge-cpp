@@ -4,7 +4,7 @@ fn trim_prefix(s: &str) -> &str { &s[1..] }
 
 
 // 2. Can the compiler elide?
-fn pick(flag: bool, a: &str, b: &str) -> &str {
+fn pick<'a>(flag: bool, a: &'a str, b: &'a str) -> &'a str {
     if flag { a } else { b }
 }
 //nope the compiler wont know which lifetime the output from, solution add only one lifetime to a and b : 'a

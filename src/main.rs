@@ -672,3 +672,54 @@ fn main34() {
     // m is dropped here
     // p1 and p are dropped here in that order
 }
+
+
+
+// -----------SMART POINTER AND INTERIOR MUTABILITY---------------//
+
+
+#[test]
+fn main35() {
+    // Creates a pointer to an integer (with value 42) created on the heap
+    let f = Box::new(42);
+    println!("{} {}", *f, f);
+    // Cloning a box creates a new heap allocation
+    let mut g = f.clone();
+    *g = 43;
+    println!("{f} {g}");
+    // g and f go out of scope here and are automatically deallocated
+}
+
+// Rust - Ownership system prevents these issues
+#[test]
+fn rust_ownership_safety() {
+    let data = Box::new(42);  // data owns the heap allocation
+
+    let moved_data = data;    // Ownership transferred to moved_data
+    // data is no longer accessible - compile error if used
+
+    let borrowed = &moved_data;  // Immutable borrow
+    println!("{}", borrowed);    // Safe to use
+
+    // moved_data automatically freed when it goes out of scope
+}
+
+//  Borrowing Rules Visualization
+#[test]
+fn borrowing_rules_example() {
+    let mut data = vec![1, 2, 3, 4, 5];
+
+    // Multiple immutable borrows - OK
+    let ref1 = &data;
+    let ref2 = &data;
+    println!("{:?} {:?}", ref1, ref2);  // Both can be used
+
+    // Mutable borrow - exclusive access
+    let ref_mut = &mut data;
+    ref_mut.push(6);
+    // ref1 and ref2 can't be used while ref_mut is active
+
+    // After ref_mut is done, immutable borrows work again
+    let ref3 = &data;
+    println!("{:?}", ref3);
+}
