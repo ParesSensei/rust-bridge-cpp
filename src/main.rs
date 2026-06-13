@@ -723,3 +723,44 @@ fn borrowing_rules_example() {
     let ref3 = &data;
     println!("{:?}", ref3);
 }
+
+
+use std::rc::Rc;
+#[derive(Debug)]
+struct Employee {employee_id: u64}
+#[test]
+fn main36() {
+    let mut us_employees = vec![];
+    let mut all_global_employees = vec![];
+    let employee = Employee { employee_id: 42 };
+    let employee_rc = Rc::new(employee);
+    us_employees.push(employee_rc.clone());
+    all_global_employees.push(employee_rc.clone());
+    let employee_one = all_global_employees.get(0); // Shared immutable reference
+    for e in us_employees {
+        println!("{}", e.employee_id);  // Shared immutable reference
+    }
+    println!("{employee_one:?}");
+}
+
+use std::rc::{Weak};
+
+struct Node {
+    value: i32,
+    parent: Option<Weak<Node>>,  // Weak reference — doesn't prevent drop
+}
+
+#[test]
+fn main37() {
+    let parent = Rc::new(Node { value: 1, parent: None });
+    let child = Rc::new(Node {
+        value: 2,
+        parent: Some(Rc::downgrade(&parent)),  // Weak ref to parent
+    });
+
+    // To use a Weak, try to upgrade it — returns Option<Rc<T>>
+    if let Some(parent_rc) = child.parent.as_ref().unwrap().upgrade() {
+        println!("Parent value: {}", parent_rc.value);
+    }
+    println!("Parent strong count: {}", Rc::strong_count(&parent)); // 1, not 2
+}
