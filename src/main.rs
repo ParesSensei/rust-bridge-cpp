@@ -7,6 +7,7 @@ mod exercise_intermdiate;
 mod exercise_move_copy_drop;
 mod exercise_starter_lifetime;
 mod exercise_intermediate_predict_the_elision;
+mod exercise_shared_ownership_and_interiror_mutability;
 
 fn main() {
     println!("Hello, world!");
