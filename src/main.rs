@@ -8,6 +8,7 @@ mod exercise_move_copy_drop;
 mod exercise_starter_lifetime;
 mod exercise_intermediate_predict_the_elision;
 mod exercise_shared_ownership_and_interiror_mutability;
+mod refcell_train;
 
 fn main() {
     println!("Hello, world!");
@@ -764,4 +765,22 @@ fn main37() {
         println!("Parent value: {}", parent_rc.value);
     }
     println!("Parent strong count: {}", Rc::strong_count(&parent)); // 1, not 2
+}
+
+
+mod math {
+    // TODO: implement pub fn add(a: u32, b: u32) -> u32
+    pub fn add(a: u32, b: u32) -> u32 {
+        a + b
+    }
+}
+
+fn greet(name: &str) -> String {
+    // TODO: return "Hello, <name>! The secret number is <math::add(21,21)>"
+    format!("Hello, {}! The secret number is {}", name, math::add(21, 21))
+}
+
+#[test]
+fn main38() {
+    println!("{}", greet("Rustacean"));
 }
