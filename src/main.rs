@@ -10,6 +10,7 @@ mod exercise_intermediate_predict_the_elision;
 mod exercise_shared_ownership_and_interiror_mutability;
 mod refcell_train;
 mod errhndl;
+mod exercise_erro_handling;
 
 fn main() {
     println!("Hello, world!");
