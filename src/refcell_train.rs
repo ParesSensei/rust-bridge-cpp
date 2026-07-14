@@ -98,3 +98,42 @@ fn main4() {
 
     println!("{}", a);
 }
+
+//soal 5
+#[test]
+fn main5() {
+
+    let counter = Rc::new(
+        RefCell::new(0)
+    );
+
+    let a = Rc::clone(&counter);
+    let b = Rc::clone(&counter);
+
+    // a menambah 5
+    {
+        *a.borrow_mut() += 5;
+    }
+
+    // b menambah 10
+    *b.borrow_mut() += 10;
+    drop(b);
+
+    println!("{}", counter.borrow());
+}
+
+
+// -------------- mini project -------------//
+// 1 todo list
+
+struct Todolist {
+    todos: RefCell<Vec<String>>,
+}
+
+impl Todolist {
+    fn add(self: &Todolist, new_todo: String) {
+        self.todos.borrow_mut().push(new_todo);
+    }
+
+
+}
