@@ -219,3 +219,77 @@ fn main9() {
     let result = double_optional_number(Some(12234));
     println!("{result:?}");
 }
+
+/*
+#[test]
+fn test_alt_unwp() {
+    // Option<T> safe alternatives
+    let value = opt.unwrap_or(default);              // Provide fallback value
+    let value = opt.unwrap_or_else(|| compute());    // Lazy computation for fallback
+    let value = opt.unwrap_or_default();             // Use Default trait implementation
+    let value = opt.expect("descriptive message");   // Only when panic is acceptable
+
+    // Result<T, E> safe alternatives
+    let value = result.unwrap_or(fallback);          // Ignore error, use fallback
+    let value = result.unwrap_or_else(|e| handle(e)); // Handle error, return fallback
+    let value = result.unwrap_or_default();          // Use Default trait
+
+    match some_option {
+    Some(value) => println!("Got: {}", value),
+    None => println!("No value found"),
+    }
+
+    match some_option {
+        Some(value) => println!("Got: {}", value),
+        None => println!("No value found"),
+    }
+
+    match some_result {
+        Ok(value) => process(value),
+        Err(error) => log_error(error),
+    }
+
+ */
+
+
+
+// [ERROR] BAD: Can panic unexpectedly
+fn bad_config_reader() -> String {
+    let config = std::env::var("CONFIG_FILE").unwrap(); // Panic if not set!
+    std::fs::read_to_string(config).unwrap()           // Panic if file missing!
+}
+
+
+
+// [OK] GOOD: Handles errors gracefully
+fn good_config_reader() -> Result<String, ConfigError> {
+    let config_path = std::env::var("CONFIG_FILE")
+        .unwrap_or_else(|_| "default.conf".to_string()); // Fallback to default
+
+    let content = std::fs::read_to_string(config_path)
+        .map_err(ConfigError::FileRead)?;                // Convert and propagate error
+
+    Ok(content)
+}
+
+// [OK] EVEN BETTER: With proper error types
+use thiserror::Error;
+
+#[derive(Error, Debug)]
+enum ConfigError {
+    #[error("Failed to read config file: {0}")]
+    FileRead(#[from] std::io::Error),
+
+    #[error("Invalid configuration: {message}")]
+    Invalid { message: String },
+}
+
+fn read_config(path: &str) -> Result<String, ConfigError> {
+    let content = std::fs::read_to_string(path)?;  // io::Error → ConfigError::FileRead
+    if content.is_empty() {
+        return Err(ConfigError::Invalid {
+            message: "config file is empty".to_string(),
+        });
+    }
+    Ok(content)
+}
