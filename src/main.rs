@@ -11,6 +11,7 @@ mod exercise_shared_ownership_and_interiror_mutability;
 mod refcell_train;
 mod errhndl;
 mod exercise_erro_handling;
+mod exercise_trait;
 
 fn main() {
     println!("Hello, world!");
