@@ -117,3 +117,89 @@ fn tes_log() {
     let complex = ComplexLogger{};
     complex.log(45);
 }
+
+#[derive(Debug)]
+struct Small(u32);
+#[derive(Debug)]
+struct Big(u32);
+
+trait Double {
+    type T;
+    fn double(&self) -> Self::T;
+}
+
+trait Triple {
+    type T;
+    fn triple(&self) -> Self::T;
+}
+
+trait Quadra {
+    type T;
+    fn quadra(&self) -> Self::T;
+}
+
+impl Double for Small {
+    type T = Big;
+    fn double(&self) -> Self::T {
+        Big(self.0 * 2)
+    }
+}
+
+impl Triple for Small {
+    type T = Big;
+    fn triple(&self) -> Self::T {
+        Big(self.0 * 3)
+    }
+}
+
+impl Quadra for Small {
+    type T = Big;
+    fn quadra(&self) -> Self::T {
+        Big(self.0 * 4)
+    }
+}
+#[test]
+fn main3() {
+    let a = Small(10);
+    println!("{:?}", a.double());
+    println!("{:?}", a.triple());
+    println!("{:?}", a.quadra());
+}
+
+trait Shape {
+    fn area(&self) -> f64;
+}
+struct Circle {
+    radius: f64
+}
+struct Rect {
+    w: f64,
+    h: f64
+}
+impl Shape for Circle {
+    fn area(&self) -> f64 {
+        std::f64::consts::PI * self.radius * self.radius
+    }
+}
+impl Shape for Rect {
+    fn area(&self) -> f64 {
+        self.w * self.h
+    }
+}
+
+// Static dispatch — compiler generates separate code for each type
+fn print_area(s: &impl Shape) { println!("{}", s.area()); }
+
+// Dynamic dispatch — one function, works with any Shape behind a pointer
+fn print_area_dyn(s: &dyn Shape) { println!("{}", s.area()); }
+
+// Enum — closed set, no trait needed
+enum ShapeEnum { Circle(f64), Rect(f64, f64) }
+impl ShapeEnum {
+    fn area(&self) -> f64 {
+        match self {
+            ShapeEnum::Circle(r) => std::f64::consts::PI * r * r,
+            ShapeEnum::Rect(w, h) => w * h,
+        }
+    }
+}
