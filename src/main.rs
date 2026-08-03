@@ -12,6 +12,7 @@ mod refcell_train;
 mod errhndl;
 mod exercise_erro_handling;
 mod exercise_trait;
+mod exercise_generic;
 
 fn main() {
     println!("Hello, world!");
