@@ -95,3 +95,147 @@ fn eercise() {
     c1.encrypt();
     c2.encrypt();
 }
+
+// enum DroneState {
+//     Idle,
+//     Flying
+// }
+// struct Drone {x: u64, y: u64, z: u64, state: DroneState}  // x, y, z are coordinates
+//
+// impl Drone<T> {
+//     x: u64, y: u64
+// }
+
+//
+// use std::marker::PhantomData;
+// struct Drone<T> {
+//     x: u64,
+//     y: u64,
+//     z: u64,
+//     state: PhantomData<T>,
+// }
+//
+// struct Idle;
+// struct Flying;
+//
+// impl Drone<Idle> {
+//     fn takeoff(self) -> Drone<Flying> {
+//
+//     }
+// }
+
+
+use std::marker::PhantomData;
+
+
+struct Open;
+struct Closed;
+
+struct Door<T> {
+    id: u32,
+    _state: PhantomData<T>,
+}
+
+impl Door<Closed> {
+    fn open(self) -> Door<Open> {
+        println!("Door opened!");
+
+        Door {
+            id: self.id,
+            _state: PhantomData,
+        }
+    }
+}
+
+impl Door<Open> {
+    fn close(self) -> Door<Closed> {
+        println!("Door closed!");
+
+        Door {
+            id: self.id,
+            _state: PhantomData,
+        }
+    }
+}
+#[test]
+fn door_example() {
+    let door = Door::<Closed> {
+        id: 1,
+        _state: PhantomData,
+    };
+
+    let door = door.open();
+
+    let door = door.close();
+
+    println!("{}", door.id);
+}
+// ------ //
+struct Moving;
+
+struct Lift<T> {
+    floor: u8,
+    _state: PhantomData<T>,
+}
+
+impl Lift<Open> {
+    fn close(self) -> Lift<Closed> {
+        println!("Door Closed");
+
+        Lift {
+            floor: self.floor,
+            _state: PhantomData,
+        }
+    }
+}
+
+impl Lift<Closed> {
+    fn move_to(mut self, floor: u8) -> Lift<Moving> {
+        println!("Moving to floor {}", floor);
+
+        self.floor = floor;
+
+        Lift {
+            floor: self.floor,
+            _state: PhantomData,
+        }
+    }
+
+    fn open(self) -> Lift<Open> {
+        println!("Door Open");
+
+        Lift {
+            floor: self.floor,
+            _state: PhantomData,
+        }
+    }
+}
+
+impl Lift<Moving> {
+    fn arrive(self) -> Lift<Closed> {
+        println!("Arrived");
+
+        Lift {
+            floor: self.floor,
+            _state: PhantomData,
+        }
+    }
+}
+
+#[test]
+fn test_lift() {
+
+    let lift = Lift::<Open> {
+        floor: 1,
+        _state: PhantomData,
+    };
+
+    let lift = lift.close();
+
+    let lift = lift.move_to(7);
+
+    let lift = lift.arrive();
+
+    let lift = lift.open();
+
+}
