@@ -14,6 +14,7 @@ mod exercise_erro_handling;
 mod exercise_trait;
 mod exercise_generic;
 mod exercise_form_into;
+mod exercise_closure;
 
 fn main() {
     println!("Hello, world!");
