@@ -15,6 +15,7 @@ mod exercise_trait;
 mod exercise_generic;
 mod exercise_form_into;
 mod exercise_closure;
+mod concurrency;
 
 fn main() {
     println!("Hello, world!");
