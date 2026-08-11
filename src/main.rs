@@ -16,6 +16,8 @@ mod exercise_generic;
 mod exercise_form_into;
 mod exercise_closure;
 mod concurrency;
+mod exercise_unsafe;
+mod avoiding_excessive_clone;
 
 fn main() {
     println!("Hello, world!");
